@@ -5,40 +5,33 @@ srpm is designed to be lightweight by making it build agnostic. The build system
 
 To remain lightweight, srpm does not provide many of the features provided by other package managers such as Maven, Gradle, Conan.io. srpm does not integrate with any build systems, manage artifacts directly, support multiple variations on a build, manage multiple versions of a component, or handle recursive dependencies. In addition, it only runs on linux.
 
-## Project Configuration
-Project configuration files are written in json. (non-optimal, but flexible enough for future development). An example configuration file that will import jsoncpp and libcurl packages into the build directory build/dependencies.
+## Package Configuration
+Package configuration files are written in json. (non-optimal, but flexible enough for future features). An example configuration file that will import jsoncpp and libcurl packages into the build directory build/dependencies.
 
 ```
 {
-  "release": "build/release",
-  "dependencies": [
+  "name": "package-manager",
+  "config-url": "https://github.com/simplerobot/package-manager/releases/latest/download/package.srpm",
+  "binary-url": "https://github.com/simplerobot/package-manager/releases/latest/download/package.tgz",
+  "release-dir": "build/release",
+
+  "dependencies":
+  [
     {
-      "url": "https://github.com/simplerobot/package-config/parsers/json/jsoncpp/jsoncpp.srpm",
       "name": "jsoncpp",
-      "dir": "build/dependencies/jsoncpp",
+      "config-url": "https://github.com/simplerobot/package-config/parsers/json/jsoncpp/jsoncpp.srpm",
+      "import-dir": "build/dependencies/jsoncpp",
     },
     {
-      "url": "https://github.com/simplerobot/package-config/network-clients/libcurl/libcurl.srpm",
       "name": "libcurl",
-      "dir": "build/dependencies/libcurl", 
+      "config-url": "https://github.com/simplerobot/package-config/network-clients/libcurl/libcurl.srpm",
+      "import-dir": "build/dependencies/libcurl", 
     },
   ],
 }
 ```
 
-This configuration can be simplified as:
-
-```
-{
-  "dir": "build/dependencies",
-  "release": "build/release",
-  "dependencies": [
-    "https://github.com/simplerobot/package-config/parsers/json/jsoncpp/jsoncpp.srpm",
-    "https://github.com/simplerobot/package-config/network-clients/libcurl/libcurl.srpm",
-  ],
-}
-```
-When developing software you may want to override a package while making a change. srpm is typically run in the top directory of a project. If the parent directory contained a file with the name <project>.srpm or a directory <project>, then that would be used instead.
+When developing software you may want to override a package while making a change. srpm is typically run in the top directory of a project. If the parent directory contains a file with the name <project>.srpm that srpm file will be used instead.  If the parent directory contains a <project> directory, then that code will be used instead.
 
 ## Running
 
