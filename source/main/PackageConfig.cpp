@@ -23,7 +23,7 @@ static bool SetOptionalString(const Json::Value& value, std::string& output, con
 	return result;
 }
 
-bool PackageConfig::Set(const Json::Value& value)
+bool PackageConfig::Load(const Json::Value& value)
 {
 	if (!value.isObject())
 	{
@@ -51,7 +51,7 @@ bool PackageConfig::Set(const Json::Value& value)
 			for (auto& dependency : dependencies)
 			{
 				PackageConfig package;
-				if (!package.Set(dependency))
+				if (!package.Load(dependency))
 					result = false;
 				AddDependency(package);
 			}

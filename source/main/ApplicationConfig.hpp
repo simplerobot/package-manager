@@ -4,12 +4,12 @@
 #include "json/json.h"
 
 
-class Config
+class ApplicationConfig
 {
 public:
-	Config();
+	ApplicationConfig();
 
-	bool LoadConfig(const Json::Value& file);
+	bool Load(const Json::Value& file);
 
 	bool HasCacheDir() const;
 	std::string GetCacheDir() const;

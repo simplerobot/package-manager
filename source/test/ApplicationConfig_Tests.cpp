@@ -1,15 +1,15 @@
 #include "Test.hpp"
-#include "Config.hpp"
+#include "ApplicationConfig.hpp"
 
 
-TEST_CASE(Config_Constructor)
+TEST_CASE(ApplicationConfig_Constructor)
 {
-	Config test;
+	ApplicationConfig test;
 }
 
-TEST_CASE(Config_HasGetSet_CacheDir)
+TEST_CASE(ApplicationConfig_HasGetSet_CacheDir)
 {
-	Config test;
+	ApplicationConfig test;
 
 	ASSERT(!test.HasCacheDir());
 	ASSERT_THROWS(test.GetCacheDir());
@@ -22,9 +22,9 @@ TEST_CASE(Config_HasGetSet_CacheDir)
 	ASSERT(test.GetCacheDir("abcd") == "test-cache-dir");
 }
 
-TEST_CASE(Config_HasGetSet_CacheValidTimeS)
+TEST_CASE(ApplicationConfig_HasGetSet_CacheValidTimeS)
 {
-	Config test;
+	ApplicationConfig test;
 
 	ASSERT(!test.HasCacheValidTimeS());
 	ASSERT_THROWS(test.GetCacheValidTimeS());
@@ -37,9 +37,9 @@ TEST_CASE(Config_HasGetSet_CacheValidTimeS)
 	ASSERT(test.GetCacheValidTimeS(12345) == 2357);
 }
 
-TEST_CASE(Config_HasGetSet_ClientCertFile)
+TEST_CASE(ApplicationConfig_HasGetSet_ClientCertFile)
 {
-	Config test;
+	ApplicationConfig test;
 
 	ASSERT(!test.HasClientCertFile());
 	ASSERT_THROWS(test.GetClientCertFile());
@@ -50,9 +50,9 @@ TEST_CASE(Config_HasGetSet_ClientCertFile)
 	ASSERT(test.GetClientCertFile() == "test-client-cert-file");
 }
 
-TEST_CASE(Config_HasGetSet_ClientKeyFile)
+TEST_CASE(ApplicationConfig_HasGetSet_ClientKeyFile)
 {
-	Config test;
+	ApplicationConfig test;
 
 	ASSERT(!test.HasClientKeyFile());
 	ASSERT_THROWS(test.GetClientKeyFile());
@@ -63,16 +63,16 @@ TEST_CASE(Config_HasGetSet_ClientKeyFile)
 	ASSERT(test.GetClientKeyFile() == "test-client-key-file");
 }
 
-TEST_CASE(Config_LoadConfig_HappyCase)
+TEST_CASE(ApplicationConfig_Load_HappyCase)
 {
-	Config test;
+	ApplicationConfig test;
 	Json::Value data(Json::objectValue);
 	data["cache-dir"] = "test-cache-dir";
 	data["cache-valid-seconds"] = 1234321;
 	data["client-cert"] = "test-client-cert";
 	data["client-key"] = "test-client-key";
 
-	ASSERT(test.LoadConfig(data));
+	ASSERT(test.Load(data));
 
 	ASSERT(test.HasCacheDir() && test.GetCacheDir() == "test-cache-dir");
 	ASSERT(test.HasCacheValidTimeS() && test.GetCacheValidTimeS() == 1234321);
@@ -80,12 +80,12 @@ TEST_CASE(Config_LoadConfig_HappyCase)
 	ASSERT(test.HasClientKeyFile() && test.GetClientKeyFile() == "test-client-key");
 }
 
-TEST_CASE(Config_LoadConfig_Empty)
+TEST_CASE(ApplicationConfig_Load_Empty)
 {
-	Config test;
+	ApplicationConfig test;
 	Json::Value data(Json::objectValue);
 
-	ASSERT(test.LoadConfig(data));
+	ASSERT(test.Load(data));
 
 	ASSERT(!test.HasCacheDir());
 	ASSERT(!test.HasCacheValidTimeS());
@@ -93,66 +93,66 @@ TEST_CASE(Config_LoadConfig_Empty)
 	ASSERT(!test.HasClientKeyFile());
 }
 
-TEST_CASE(Config_LoadConfig_InvalidFileType)
+TEST_CASE(ApplicationConfig_Load_InvalidFileType)
 {
-	Config test;
+	ApplicationConfig test;
 
-	ASSERT(!test.LoadConfig(Json::Value(Json::nullValue)));
-	ASSERT(!test.LoadConfig(Json::Value(Json::stringValue)));
+	ASSERT(!test.Load(Json::Value(Json::nullValue)));
+	ASSERT(!test.Load(Json::Value(Json::stringValue)));
 }
 
-TEST_CASE(Config_LoadConfig_InvalidCacheDir)
+TEST_CASE(ApplicationConfig_Load_InvalidCacheDir)
 {
-	Config test;
+	ApplicationConfig test;
 	Json::Value data(Json::objectValue);
 	data["cache-dir"] = 2468;
 	data["cache-valid-seconds"] = 1234321;
 	data["client-cert"] = "test-client-cert";
 	data["client-key"] = "test-client-key";
 
-	ASSERT(test.LoadConfig(data));
+	ASSERT(test.Load(data));
 
 	ASSERT(!test.HasCacheDir());
 }
 
-TEST_CASE(Config_LoadConfig_InvalidCacheValidSeconds)
+TEST_CASE(ApplicationConfig_Load_InvalidCacheValidSeconds)
 {
-	Config test;
+	ApplicationConfig test;
 	Json::Value data(Json::objectValue);
 	data["cache-dir"] = "test-cache-dir";
 	data["cache-valid-seconds"] = "invalid-time";
 	data["client-cert"] = "test-client-cert";
 	data["client-key"] = "test-client-key";
 
-	ASSERT(test.LoadConfig(data));
+	ASSERT(test.Load(data));
 
 	ASSERT(!test.HasCacheValidTimeS());
 }
 
-TEST_CASE(Config_LoadConfig_InvalidCacheClientCert)
+TEST_CASE(ApplicationConfig_Load_InvalidCacheClientCert)
 {
-	Config test;
+	ApplicationConfig test;
 	Json::Value data(Json::objectValue);
 	data["cache-dir"] = "test-cache-dir";
 	data["cache-valid-seconds"] = 1234321;
 	data["client-cert"] = 2468;
 	data["client-key"] = "test-client-key";
 
-	ASSERT(test.LoadConfig(data));
+	ASSERT(test.Load(data));
 
 	ASSERT(!test.HasClientCertFile());
 }
 
-TEST_CASE(Config_LoadConfig_InvalidCacheClientKey)
+TEST_CASE(ApplicationConfig_Load_InvalidCacheClientKey)
 {
-	Config test;
+	ApplicationConfig test;
 	Json::Value data(Json::objectValue);
 	data["cache-dir"] = "test-cache-dir";
 	data["cache-valid-seconds"] = 1234321;
 	data["client-cert"] = "test-client-cert";
 	data["client-key"] = 2468;
 
-	ASSERT(test.LoadConfig(data));
+	ASSERT(test.Load(data));
 
 	ASSERT(!test.HasClientKeyFile());
 }

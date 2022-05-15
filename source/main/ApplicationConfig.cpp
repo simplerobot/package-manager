@@ -1,7 +1,7 @@
-#include "Config.hpp"
+#include "ApplicationConfig.hpp"
 
 
-Config::Config()
+ApplicationConfig::ApplicationConfig()
 : m_has_cache_dir(false)
 , m_has_cache_valid_time_s(false)
 , m_cache_valid_time_s(0)
@@ -10,7 +10,7 @@ Config::Config()
 {
 }
 
-bool Config::LoadConfig(const Json::Value& file)
+bool ApplicationConfig::Load(const Json::Value& file)
 {
 	if (!file.isObject())
 	{
@@ -57,87 +57,87 @@ bool Config::LoadConfig(const Json::Value& file)
 	return true;
 }
 
-bool Config::HasCacheDir() const
+bool ApplicationConfig::HasCacheDir() const
 {
 	return m_has_cache_dir;
 }
 
-std::string Config::GetCacheDir() const
+std::string ApplicationConfig::GetCacheDir() const
 {
 	if (!HasCacheDir())
 		throw std::runtime_error("missing cache dir");
 	return m_cache_dir;
 }
 
-std::string Config::GetCacheDir(const std::string& default_cache_dir) const
+std::string ApplicationConfig::GetCacheDir(const std::string& default_cache_dir) const
 {
 	if (!HasCacheDir())
 		return default_cache_dir;
 	return m_cache_dir;
 }
 
-void Config::SetCacheDir(const std::string& cache_dir)
+void ApplicationConfig::SetCacheDir(const std::string& cache_dir)
 {
 	m_has_cache_dir = true;
 	m_cache_dir = cache_dir;
 }
 
-bool Config::HasCacheValidTimeS() const
+bool ApplicationConfig::HasCacheValidTimeS() const
 {
 	return m_has_cache_valid_time_s;
 }
 
-size_t Config::GetCacheValidTimeS() const
+size_t ApplicationConfig::GetCacheValidTimeS() const
 {
 	if (!HasCacheValidTimeS())
 		throw std::runtime_error("missing cache valid time s");
 	return m_cache_valid_time_s;
 }
 
-size_t Config::GetCacheValidTimeS(size_t default_cache_valid_time_s) const
+size_t ApplicationConfig::GetCacheValidTimeS(size_t default_cache_valid_time_s) const
 {
 	if (!HasCacheValidTimeS())
 		return default_cache_valid_time_s;
 	return m_cache_valid_time_s;
 }
 
-void Config::SetCacheValidTimeS(size_t cache_valid_time_s)
+void ApplicationConfig::SetCacheValidTimeS(size_t cache_valid_time_s)
 {
 	m_has_cache_valid_time_s = true;
 	m_cache_valid_time_s = cache_valid_time_s;
 }
 
-bool Config::HasClientCertFile() const
+bool ApplicationConfig::HasClientCertFile() const
 {
 	return m_has_client_cert_file;
 }
 
-std::string Config::GetClientCertFile() const
+std::string ApplicationConfig::GetClientCertFile() const
 {
 	if (!HasClientCertFile())
 		throw std::runtime_error("missing client cert file");
 	return m_client_cert_file;
 }
 
-void Config::SetClientCertFile(const std::string& client_cert_file)
+void ApplicationConfig::SetClientCertFile(const std::string& client_cert_file)
 {
 	m_has_client_cert_file = true;
 	m_client_cert_file = client_cert_file;
 }
 
-bool Config::HasClientKeyFile() const
+bool ApplicationConfig::HasClientKeyFile() const
 {
 	return m_has_client_key_file;
 }
 
-std::string Config::GetClientKeyFile() const
+std::string ApplicationConfig::GetClientKeyFile() const
 {
 	if (!HasClientKeyFile())
 		throw std::runtime_error("missing client key file");
 	return m_client_key_file;
 }
 
-void Config::SetClientKeyFile(const std::string& client_key_file)
+void ApplicationConfig::SetClientKeyFile(const std::string& client_key_file)
 {
 	m_has_client_key_file = true;
 	m_client_key_file = client_key_file;

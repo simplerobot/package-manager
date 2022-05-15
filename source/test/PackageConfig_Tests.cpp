@@ -279,7 +279,7 @@ TEST_CASE(PackageConfig_AddDependency)
 	ASSERT(i == test.end());
 }
 
-TEST_CASE(PackageConfig_Set_HappyCase)
+TEST_CASE(PackageConfig_Load_HappyCase)
 {
 	PackageConfig test;
 	Json::Value dependency(Json::objectValue);
@@ -294,7 +294,7 @@ TEST_CASE(PackageConfig_Set_HappyCase)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = dependency_array;
 
-	ASSERT(test.Set(config));
+	ASSERT(test.Load(config));
 
 	ASSERT(test.GetName() == "test-name");
 	ASSERT(test.GetConfigUrl() == "test-config-url");
@@ -308,7 +308,7 @@ TEST_CASE(PackageConfig_Set_HappyCase)
 	ASSERT(i == test.end());
 }
 
-TEST_CASE(PackageConfig_Set_InvalidName)
+TEST_CASE(PackageConfig_Load_InvalidName)
 {
 	PackageConfig test;
 	Json::Value dependency(Json::objectValue);
@@ -323,18 +323,18 @@ TEST_CASE(PackageConfig_Set_InvalidName)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = dependency_array;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_Invalid)
+TEST_CASE(PackageConfig_Load_Invalid)
 {
 	PackageConfig test;
 	Json::Value config(Json::stringValue);
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_InvalidConfigUrl)
+TEST_CASE(PackageConfig_Load_InvalidConfigUrl)
 {
 	PackageConfig test;
 	Json::Value dependency(Json::objectValue);
@@ -349,10 +349,10 @@ TEST_CASE(PackageConfig_Set_InvalidConfigUrl)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = dependency_array;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_InvalidBinaryUrl)
+TEST_CASE(PackageConfig_Load_InvalidBinaryUrl)
 {
 	PackageConfig test;
 	Json::Value dependency(Json::objectValue);
@@ -367,10 +367,10 @@ TEST_CASE(PackageConfig_Set_InvalidBinaryUrl)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = dependency_array;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_InvalidReleaseDir)
+TEST_CASE(PackageConfig_Load_InvalidReleaseDir)
 {
 	PackageConfig test;
 	Json::Value dependency(Json::objectValue);
@@ -385,10 +385,10 @@ TEST_CASE(PackageConfig_Set_InvalidReleaseDir)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = dependency_array;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_InvalidImportDir)
+TEST_CASE(PackageConfig_Load_InvalidImportDir)
 {
 	PackageConfig test;
 	Json::Value dependency(Json::objectValue);
@@ -403,10 +403,10 @@ TEST_CASE(PackageConfig_Set_InvalidImportDir)
 	config["import-dir"] = 5;
 	config["dependencies"] = dependency_array;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_InvalidDepenency)
+TEST_CASE(PackageConfig_Load_InvalidDepenency)
 {
 	PackageConfig test;
 	Json::Value dependency_array(Json::arrayValue);
@@ -419,10 +419,10 @@ TEST_CASE(PackageConfig_Set_InvalidDepenency)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = dependency_array;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }
 
-TEST_CASE(PackageConfig_Set_InvalidDependencyArray)
+TEST_CASE(PackageConfig_Load_InvalidDependencyArray)
 {
 	PackageConfig test;
 	Json::Value config(Json::objectValue);
@@ -433,5 +433,5 @@ TEST_CASE(PackageConfig_Set_InvalidDependencyArray)
 	config["import-dir"] = "test-import-dir";
 	config["dependencies"] = 5;
 
-	ASSERT(!test.Set(config));
+	ASSERT(!test.Load(config));
 }

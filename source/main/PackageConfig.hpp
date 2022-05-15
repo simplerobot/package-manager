@@ -13,7 +13,7 @@ public:
 public:
 	PackageConfig();
 
-	bool Set(const Json::Value& value);
+	bool Load(const Json::Value& value);
 
 	bool HasName() const;
 	bool ValidateName() const;
