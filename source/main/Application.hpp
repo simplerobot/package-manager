@@ -7,6 +7,9 @@
 
 
 constexpr int EXITCODE_SUCCESS = 0;
+constexpr int EXITCODE_INVALID_ARGUMENTS = 1;
+constexpr int EXITCODE_INVALID_CONFIGURATION = 2;
+constexpr int EXITCODE_INVALID_PACKAGE = 3;
 
 
 class Application
@@ -22,6 +25,7 @@ public:
 
 	virtual void PrintHelp(const char* application_name);
 	virtual int FetchDependencies(const ApplicationConfig& config, const PackageConfig& package);
+	virtual int FlushAllDependencies(const ApplicationConfig& config, const PackageConfig& package);
 	virtual int FlushDependencies(const ApplicationConfig& config, const PackageConfig& package, const std::vector<std::string>& target_dependencies);
 
 private:

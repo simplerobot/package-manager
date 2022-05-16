@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include <getopt.h>
 
 
 Application::Application(SystemInterface& system)
@@ -10,10 +11,147 @@ Application::~Application()
 {
 }
 
+void Application::PrintHelp(const char* application_name)
+{
+	std::printf("%s --help                                Prints help\n", application_name);
+	std::printf("%s <package-file> [--load]               Loads dependencies\n", application_name);
+	std::printf("%s <package-file> --flush-all            Flushes all cached dependencies\n", application_name);
+	std::printf("%s <package-file> --flush <dependency>   Flushes a specific dependency\n", application_name);
+}
+
 int Application::Run(int argc, char* const argv[])
 {
-	throw std::runtime_error("not implemented");
-	return EXITCODE_SUCCESS;
+	static struct option long_options[] = {
+		{ "help",         no_argument,       nullptr, 'h' },
+		{ "load",         no_argument,       nullptr, 'l' },
+		{ "flush-all",    no_argument,       nullptr, 'a' },
+		{ "flush",        required_argument, nullptr, 'f' },
+		{ nullptr, 0, nullptr, 0 }
+	};
+
+	bool error = false;
+	bool command_show_help = false;
+	bool command_load = false;
+	bool command_flush = false;
+	std::vector<std::string> flush_dependencies;
+	bool flush_all = false;
+	const char* package_file = nullptr;
+
+	int option_index = 0;
+	int c;
+	optind = 1; // Make sure scanning starts at the beginning.
+	while ((c = ::getopt_long(argc, argv, "hlaf:", long_options, &option_index)) != -1)
+	{
+		switch (c)
+		{
+		case 'h': // help
+			command_show_help = true;
+			break;
+		case 'l': // load
+			command_load = true;
+			break;
+		case 'a': // flush-all
+			command_flush = true;
+			flush_all = true;
+			break;
+		case 'f': // flush
+			command_flush = true;
+			flush_dependencies.push_back(optarg);
+			break;
+		case '?':
+		default:
+			error = true;
+			std::printf("Error: Unknown parameter '%s'\n", argv[optind]);
+			break;
+		}
+	}
+
+	if (optind < argc)
+	{
+		package_file = argv[optind++];
+	}
+
+	for (int i = optind; i < argc; i++)
+	{
+		error = true;
+		std::printf("Error: Unknown parameter '%s'\n", argv[i]);
+	}
+
+	// Default to load command.
+	if (!command_show_help && !command_flush)
+	{
+		command_load = true;
+	}
+
+	// Check commands.
+	if ((command_show_help && command_load) || (command_show_help && command_flush) || (command_load && command_flush))
+	{
+		error = true;
+		std::printf("Error: Multiple commands.\n");
+	}
+	if (flush_all && !flush_dependencies.empty())
+	{
+		error = true;
+		std::printf("Error: Cannot flush all and specific dependencies.\n");
+	}
+	if (command_show_help && package_file != nullptr)
+	{
+		error = true;
+		std::printf("Error: Help command does not support a package file.\n");
+	}
+	if (command_load && package_file == nullptr)
+	{
+		error = true;
+		std::printf("Error: Load command requires a package file.\n");
+	}
+	if (command_flush && package_file == nullptr)
+	{
+		error = true;
+		std::printf("Error: Flush command requires a package file.\n");
+	}
+
+	// Process command
+
+	if (error)
+	{
+		PrintHelp(argv[0]);
+		return EXITCODE_INVALID_ARGUMENTS;
+	}
+
+	if (command_show_help)
+	{
+		PrintHelp(argv[0]);
+		return EXITCODE_SUCCESS;
+	}
+
+	ApplicationConfig application_config;
+	if (!LoadApplicationConfig(application_config))
+	{
+		std::printf("Error: Unable to load application configuration.\n");
+		return EXITCODE_INVALID_CONFIGURATION;
+	}
+
+	PackageConfig package_config;
+	if (package_file == nullptr || !LoadPackageConfig(package_file, package_config))
+	{
+		std::printf("Error: Unable to load package configuration.\n");
+		return EXITCODE_INVALID_PACKAGE;
+	}
+
+	if (command_flush)
+	{
+		if (flush_all)
+			return FlushAllDependencies(application_config, package_config);
+		else
+			return FlushDependencies(application_config, package_config, flush_dependencies);
+	}
+
+	if (command_load)
+	{
+		return FetchDependencies(application_config, package_config);
+	}
+
+	throw std::runtime_error("internal error");
 }
 
 bool Application::LoadApplicationConfig(ApplicationConfig& application_config)
@@ -70,17 +208,17 @@ bool Application::LoadPackageConfig(const char* package_filename, PackageConfig&
 	return true;
 }
 
-void Application::PrintHelp(const char* application_name)
-{
-	std::printf("%s --help                                Prints help\n", application_name);
-	std::printf("%s <project-file> [--load]               Loads dependencies\n", application_name);
-	std::printf("%s <project-file> --flush-all            Flushes all cached dependencies\n", application_name);
-	std::printf("%s <project-file> --flush <dependency>   Flushes a specific dependency\n", application_name);
-}
-
 int Application::FetchDependencies(const ApplicationConfig& config, const PackageConfig& package)
 {
 	throw std::runtime_error("not implemented");
+}
+
+int Application::FlushAllDependencies(const ApplicationConfig& config, const PackageConfig& package)
+{
+	std::vector<std::string> dependencies;
+	for (auto& dependency : package)
+		dependencies.push_back(dependency.GetName());
+	return FlushDependencies(config, package, dependencies);
 }
 
 int Application::FlushDependencies(const ApplicationConfig& config, const PackageConfig& package, const std::vector<std::string>& target_dependencies)
