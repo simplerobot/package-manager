@@ -40,7 +40,7 @@ int Application::Run(int argc, char* const argv[])
 	int option_index = 0;
 	int c;
 	optind = 1; // Make sure scanning starts at the beginning.
-	while ((c = ::getopt_long(argc, argv, "hlaf:", long_options, &option_index)) != -1)
+	while ((c = ::getopt_long(argc, argv, "", long_options, &option_index)) != -1)
 	{
 		switch (c)
 		{
@@ -61,7 +61,7 @@ int Application::Run(int argc, char* const argv[])
 		case '?':
 		default:
 			error = true;
-			std::printf("Error: Unknown parameter '%s'\n", argv[optind]);
+			std::printf("Error: Unknown parameter.\n");
 			break;
 		}
 	}
@@ -187,7 +187,10 @@ bool Application::LoadPackageConfig(const char* package_filename, PackageConfig&
 {
 	std::string package_text;
 	if (!m_system.Load(package_filename, package_text))
-		return true;
+	{
+		std::printf("Warning: Unable to open file '%s'.\n", package_filename);
+		return false;
+	}
 
 	Json::CharReaderBuilder builder;
 	std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
