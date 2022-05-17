@@ -140,15 +140,15 @@ TEST_CASE(Application_LoadApplicationConfig_HappyCase)
 	SystemMock system_mock;
 	Application test(system_mock);
 	system_mock.SetConfigurationDir("/non/existant/dir");
-	system_mock.SetFile("/non/existant/dir/.srpm/config", R"({ "cache-dir": "~/test/cache/dir/", "cache-valid-seconds": 1234567, "client-cert": "~/test-client-cert.pem", "client-key": "~/test-client-key.pem", })");
+	system_mock.SetFile("/non/existant/dir/.srpm/config", R"({ "cache-dir": "~/test/cache/dir/", "cache-valid-seconds": 1234567, "servers" : [ { "host": "test-hostname", "client-cert": "~/test-client-cert.pem", "client-key": "~/test-client-key.pem" } ] })");
 
 	ApplicationConfig application_config;
 	ASSERT(test.LoadApplicationConfig(application_config));
 
 	ASSERT(application_config.GetCacheDir() == "~/test/cache/dir/");
 	ASSERT(application_config.GetCacheValidTimeS() == 1234567);
-	ASSERT(application_config.GetClientCertFile() == "~/test-client-cert.pem");
-	ASSERT(application_config.GetClientKeyFile() == "~/test-client-key.pem");
+	ASSERT(application_config.GetServerConfig("test-hostname").GetClientCertFile() == "~/test-client-cert.pem");
+	ASSERT(application_config.GetServerConfig("test-hostname").GetClientKeyFile() == "~/test-client-key.pem");
 }
 
 TEST_CASE(Application_LoadApplicationConfig_MissingFile)

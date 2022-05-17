@@ -43,6 +43,7 @@ srpm [<project-file>] [--load]        Loads dependencies
 ## Configuration
 Files:
 ```
+package.srpm         default package file name
 ~/.srpm/config       configuration file
 ~/.srpm/cache/       cached dependencies
 ```
@@ -51,8 +52,13 @@ Configuration File:
 {
   "cache-dir": "~/.srpm/cache/",
   "cache-valid-seconds": "300",
-  "client-cert": "~/cert.pem",
-  "client-key": "~/key.pem",
+  "servers" : [
+    {
+      "host": "git.simplerobots.com",
+      "client-cert": "~/.srpm/simplerobots.cert.pem",
+      "client-key": "~/.srpm/simplerobots.key.pem",
+    },
+  ],
 }
 ```
 ## Integrating with make

@@ -8,18 +8,17 @@ PackageConfig::PackageConfig()
 static bool SetOptionalString(const Json::Value& value, std::string& output, const char* field)
 {
 	bool result = true;
-	if (!value.isNull())
+
+	if (value.isString())
 	{
-		if (value.isString())
-		{
-			output = value.asString();
-		}
-		else
-		{
-			std::printf("Error: Field %s contains a non-string value.\n", field);
-			result = false;
-		}
+		output = value.asString();
 	}
+	else if (!value.isNull())
+	{
+		std::printf("Error: Field %s contains a non-string value.\n", field);
+		result = false;
+	}
+
 	return result;
 }
 
@@ -44,23 +43,21 @@ bool PackageConfig::Load(const Json::Value& value)
 		result = false;
 
 	Json::Value dependencies = value["dependencies"];
-	if (!dependencies.isNull())
+
+	if (dependencies.isArray())
 	{
-		if (dependencies.isArray())
+		for (auto& dependency : dependencies)
 		{
-			for (auto& dependency : dependencies)
-			{
-				PackageConfig package;
-				if (!package.Load(dependency))
-					result = false;
-				AddDependency(package);
-			}
+			PackageConfig package;
+			if (!package.Load(dependency))
+				result = false;
+			AddDependency(package);
 		}
-		else
-		{
-			std::printf("Error: Field dependencies contains a non-array value.\n");
-			result = false;
-		}
+	}
+	else if (!dependencies.isNull())
+	{
+		std::printf("Error: Field dependencies contains a non-array value.\n");
+		result = false;
 	}
 
 	return result;
