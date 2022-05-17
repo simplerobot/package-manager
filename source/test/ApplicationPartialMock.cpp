@@ -44,23 +44,9 @@ void ApplicationPartialMock::PrintHelp(const char* application_name)
 	Validate(out.str());
 }
 
-int ApplicationPartialMock::FetchDependencies(const ApplicationConfig& config, const PackageConfig& package)
+int ApplicationPartialMock::LoadDependencies(const ApplicationConfig& config, const PackageConfig& package)
 {
-	return Validate("FetchDependencies");
-}
-
-int ApplicationPartialMock::FlushAllDependencies(const ApplicationConfig& config, const PackageConfig& package)
-{
-	return Validate("FlushAllDependencies");
-}
-
-int ApplicationPartialMock::FlushDependencies(const ApplicationConfig& config, const PackageConfig& package, const std::vector<std::string>& target_dependencies)
-{
-	std::stringstream out;
-	out << "FlushDependencies";
-	for (auto& s : target_dependencies)
-		out << " " << s;
-	return Validate(out.str());
+	return Validate("LoadDependencies");
 }
 
 void ApplicationPartialMock::ExpectLoadApplicationConfig(const ApplicationConfig& application_config, bool result)
@@ -84,23 +70,9 @@ void ApplicationPartialMock::ExpectPrintHelp(const char* application_name)
 	Expect(out.str(), 0);
 }
 
-void ApplicationPartialMock::ExpectFetchDependencies(int result)
+void ApplicationPartialMock::ExpectLoadDependencies(int result)
 {
-	Expect("FetchDependencies", result);
-}
-
-void ApplicationPartialMock::ExpectFlushAllDependencies(int result)
-{
-	Expect("FlushAllDependencies", result);
-}
-
-void ApplicationPartialMock::ExpectFlushDependencies(const std::vector<std::string>& target_dependencies, int result)
-{
-	std::stringstream out;
-	out << "FlushDependencies";
-	for (auto& s : target_dependencies)
-		out << " " << s;
-	Expect(out.str(), result);
+	Expect("LoadDependencies", result);
 }
 
 void ApplicationPartialMock::Expect(const std::string& expected, int result)

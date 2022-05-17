@@ -18,17 +18,13 @@ public:
 	virtual bool LoadPackageConfig(const char* package_filename, PackageConfig& package_config) override;
 
 	virtual void PrintHelp(const char* application_name) override;
-	virtual int FetchDependencies(const ApplicationConfig& config, const PackageConfig& package) override;
-	virtual int FlushAllDependencies(const ApplicationConfig& config, const PackageConfig& package) override;
-	virtual int FlushDependencies(const ApplicationConfig& config, const PackageConfig& package, const std::vector<std::string>& target_dependencies) override;
+	virtual int LoadDependencies(const ApplicationConfig& config, const PackageConfig& package) override;
 
 	void ExpectLoadApplicationConfig(const ApplicationConfig& application_config, bool result);
 	void ExpectLoadPackageConfig(const char* package_filename, const PackageConfig& package_config, bool result);
 
 	void ExpectPrintHelp(const char* application_name);
-	void ExpectFetchDependencies(int result);
-	void ExpectFlushAllDependencies(int result);
-	void ExpectFlushDependencies(const std::vector<std::string>& target_dependencies, int result);
+	void ExpectLoadDependencies(int result);
 
 
 private:

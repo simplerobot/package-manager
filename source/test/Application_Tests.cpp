@@ -23,7 +23,7 @@ TEST_CASE(Application_Run_ImplicitLoad)
 	ApplicationPartialMock test;
 	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
 	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFetchDependencies(EXITCODE_SUCCESS);
+	test.ExpectLoadDependencies(EXITCODE_SUCCESS);
 
 	int result = test.Run({ "srpm", "test_package_filename.srpm" });
 
@@ -45,33 +45,9 @@ TEST_CASE(Application_Run_ExplicitLoad)
 	ApplicationPartialMock test;
 	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
 	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFetchDependencies(EXITCODE_SUCCESS);
+	test.ExpectLoadDependencies(EXITCODE_SUCCESS);
 
 	int result = test.Run({ "srpm", "test_package_filename.srpm", "--load" });
-
-	ASSERT(result == EXITCODE_SUCCESS);
-}
-
-TEST_CASE(Application_Run_FlushAll)
-{
-	ApplicationPartialMock test;
-	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
-	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFlushAllDependencies(EXITCODE_SUCCESS);
-
-	int result = test.Run({ "srpm", "test_package_filename.srpm", "--flush-all" });
-
-	ASSERT(result == EXITCODE_SUCCESS);
-}
-
-TEST_CASE(Application_Run_Flush)
-{
-	ApplicationPartialMock test;
-	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
-	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFlushDependencies({ "a", "b" }, EXITCODE_SUCCESS);
-
-	int result = test.Run({ "srpm", "test_package_filename.srpm", "--flush", "a", "--flush", "b" });
 
 	ASSERT(result == EXITCODE_SUCCESS);
 }
@@ -106,16 +82,6 @@ TEST_CASE(Application_Run_MultipleCommands)
 	ASSERT(result == EXITCODE_INVALID_ARGUMENTS);
 }
 
-TEST_CASE(Application_Run_FlushAllAndFlush)
-{
-	ApplicationPartialMock test;
-	test.ExpectPrintHelp("a.out");
-
-	int result = test.Run({ "a.out", "test_package_filename.srpm", "--flush-all", "--flush", "a" });
-
-	ASSERT(result == EXITCODE_INVALID_ARGUMENTS);
-}
-
 TEST_CASE(Application_Run_HelpWithPackage)
 {
 	ApplicationPartialMock test;
@@ -136,58 +102,14 @@ TEST_CASE(Application_Run_LoadNoPackage)
 	ASSERT(result == EXITCODE_INVALID_ARGUMENTS);
 }
 
-TEST_CASE(Application_Run_FlushEmpty)
-{
-	ApplicationPartialMock test;
-	test.ExpectPrintHelp("test-app-name");
-
-	int result = test.Run({ "test-app-name", "pkg.srpm", "--flush" });
-
-	ASSERT(result == EXITCODE_INVALID_ARGUMENTS);
-}
-
-TEST_CASE(Application_Run_FlushNoPackage)
-{
-	ApplicationPartialMock test;
-	test.ExpectPrintHelp("test-app-name");
-
-	int result = test.Run({ "test-app-name", "--flush", "a" });
-
-	ASSERT(result == EXITCODE_INVALID_ARGUMENTS);
-}
-
 TEST_CASE(Application_Run_LoadFailed)
 {
 	ApplicationPartialMock test;
 	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
 	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFetchDependencies(12345);
+	test.ExpectLoadDependencies(12345);
 
 	int result = test.Run({ "srpm", "test_package_filename.srpm", "--load" });
-
-	ASSERT(result == 12345);
-}
-
-TEST_CASE(Application_Run_FlushAllFailed)
-{
-	ApplicationPartialMock test;
-	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
-	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFlushAllDependencies(12345);
-
-	int result = test.Run({ "srpm", "test_package_filename.srpm", "--flush-all" });
-
-	ASSERT(result == 12345);
-}
-
-TEST_CASE(Application_Run_FlushFailed)
-{
-	ApplicationPartialMock test;
-	test.ExpectLoadApplicationConfig(ApplicationConfig(), true);
-	test.ExpectLoadPackageConfig("test_package_filename.srpm", PackageConfig(), true);
-	test.ExpectFlushDependencies({ "a", "b" }, 12345);
-
-	int result = test.Run({ "srpm", "test_package_filename.srpm", "--flush", "a", "--flush", "b" });
 
 	ASSERT(result == 12345);
 }
@@ -331,7 +253,5 @@ TEST_CASE(Application_LoadPackageConfig_LoadFailed)
 }
 
 /*
-	virtual int FetchDependencies(const ApplicationConfig& config, const PackageConfig& package);
-	virtual int FlushAllDependencies(const ApplicationConfig& config, const PackageConfig& package);
-	virtual int FlushDependencies(const ApplicationConfig& config, const PackageConfig& package, const std::vector<std::string>& target_dependencies);
+	virtual int LoadDependencies(const ApplicationConfig& config, const PackageConfig& package);
  */

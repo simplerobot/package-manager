@@ -24,9 +24,7 @@ public:
 	virtual bool LoadPackageConfig(const char* package_filename, PackageConfig& package_config);
 
 	virtual void PrintHelp(const char* application_name);
-	virtual int FetchDependencies(const ApplicationConfig& config, const PackageConfig& package);
-	virtual int FlushAllDependencies(const ApplicationConfig& config, const PackageConfig& package);
-	virtual int FlushDependencies(const ApplicationConfig& config, const PackageConfig& package, const std::vector<std::string>& target_dependencies);
+	virtual int LoadDependencies(const ApplicationConfig& config, const PackageConfig& package);
 
 private:
 	SystemInterface& m_system;

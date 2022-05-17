@@ -37,10 +37,8 @@ When developing software you may want to override a package while making a chang
 
 Command line options:
 ```
-srpm --help                                Prints help
-srpm <project-file> [--load]               Loads dependencies
-srpm <project-file> --flush-all            Flushes all cached dependencies
-srpm <project-file> --flush <dependency>   Flushes a specific dependency
+srpm --help                           Prints help
+srpm [<project-file>] [--load]        Loads dependencies
 ```
 ## Configuration
 Files:
